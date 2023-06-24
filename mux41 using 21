@@ -1,0 +1,43 @@
+mux2:1
+
+module mux21(input i0,i1,s,output y);
+  
+  assign y = s?i1:i0;
+  
+endmodule
+
+mux4:1
+
+`include"mux21.v"
+module mux41(input i0,i1,i2,i3,s0,s1,output y);
+  wire y1,y2;
+  mux21 m1 (i0,i1,s0,y1);
+  mux21 m2 (i2,i3,s0,y2);
+  mux21 m3 (y1,y2,s1,y);
+endmodule
+
+
+testtb
+
+module test;
+  wire y;
+  reg i0,i1,i2,i3,s0,s1;
+  integer i;
+  
+  mux41 M(i0,i1,i2,i3,s0,s1,y);
+   initial
+   begin
+     for(i=0;i<2**6;i=i+1)
+     begin
+     {i0,i1,i2,i3,s0,s1}=i;
+    #5;
+     end
+   end
+   initial
+   begin
+     $monitor("i0=%b,i1=%b,i2=%b,i3=%b,s1=%b,s0=%b,y=%b",i0,i1,i2,i3,s1,s0,y);
+   end
+ endmodule
+
+
+  
