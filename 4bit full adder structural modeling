@@ -1,0 +1,63 @@
+                               Half adder
+
+
+module HA(input a,b,output sum,cout);
+  assign sum=a^b;
+  assign cout=a&b;
+endmodule
+
+
+                                 Full adder
+
+           
+`include "HA.v"
+module FA(input a,b,cin,output sum,cout);
+  wire sum1,c1,c2;
+  HA h1(a,b,sum1,c1);
+  HA h2(sum1,cin,sum,c2);
+  or(cout,c1,c2);
+  
+endmodule
+
+
+                               4 bit full adder
+
+
+`include "FA.v"
+module PFA(a,b,cin,cout,sum);
+  input [3:0] a,b;
+  input cin;
+  output cout;
+  output[3:0] sum;
+  wire c1,c2,c3;
+  FA f1(a[0],b[0],cin,sum[0],c1);
+  FA f2(a[1],b[1],c1,sum[1],c2);
+  FA f3(a[2],b[2],c2,sum[2],c3);
+  FA f4(a[3],b[3],c3,sum[3],cout);
+endmodule
+
+
+                            testbench
+
+
+module test;
+  wire cout;
+  wire[3:0] sum;
+  reg [3:0] a,b;
+  reg cin;
+  integer i;
+  PFA dut(a,b,cin,cout,sum);
+  initial
+  begin
+    for(i=0;i<2**9;i=i+1)
+    begin
+      {a}=i;cin=i;
+     {b}=i; 
+      #5;
+    end
+  end
+  initial
+  $monitor("a=%b,b=%b,cin=%b,sum=%b,cout=%b",a,b,cin,sum,cout);
+endmodule
+
+
