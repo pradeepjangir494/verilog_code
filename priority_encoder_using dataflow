@@ -1,0 +1,36 @@
+                                            DUT
+
+module pencoder(input d0,d1,d2,d3,output y0,y1);
+  assign y1=((~d0 & ~d1 & d2)| (~d0 & ~d1 & ~d2 & d3));
+  
+  assign y0=((~d0 & d1)| (~d0 & ~d1 & ~d2 & d3));
+  
+endmodule
+
+
+
+                                          Testbench
+
+
+
+module test;
+  wire y0,y1;
+  reg d0,d1,d2,d3;
+  integer i;
+  
+  pencoder dut(d0,d1,d2,d3,y0,y1);
+   initial
+   begin
+     for(i=0;i<2**4;i=i+1)
+     begin
+       
+     {d0,d1,d2,d3}=i;
+    #5;
+     end
+   end
+   initial
+   begin
+     $monitor("d0=%b,d1=%b,d2=%b,d3=%b,y1=%b,y0=%b",d0,d1,d2,d3,y1,y0);
+   end
+ endmodule
+
